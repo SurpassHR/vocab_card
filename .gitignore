@@ -1,5 +1,5 @@
 .vscode
 .history
 node_modules
-history.db
+history.db*
 __pycache__

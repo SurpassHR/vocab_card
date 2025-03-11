@@ -24,6 +24,7 @@ class PotAppWordHistoryBD:
             if DEBUG_FLG:
                 return self._formatResult(structured_result)
             else:
+                self._formatResult(structured_result)
                 res_list.append(self._formatOutput(structured_result))
         return res_list
 
@@ -37,11 +38,11 @@ class PotAppWordHistoryBD:
 
     # 获取数据库表头
     def _getTitleFromSqlDB(self) -> List[str]:
-        column_names = self.execute(f"PRAGMA table_info({self.table_name})").fetchall()
+        column_names = self.cur.execute(f"PRAGMA table_info({self.table_name})").fetchall()
         return column_names
 
     def _getCambDictDataFromSqlDBByData(self, date: str) -> ITEM:
-        res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp < \'{date}\' ORDER BY id DESC LIMIT 20 OFFSET 0").fetchall()
+        res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp < \'{date}\' AND timestamp >= \'{date - 86400000}\' ORDER BY id DESC LIMIT 20 OFFSET 0").fetchall()
         struct_list = [ITEM(*item) for item in res]
         dict_list = [item._asdict() for item in struct_list]
         return dict_list
@@ -68,7 +69,8 @@ class PotAppWordHistoryBD:
             if isinstance(local_res_item, list):
                 local_res_item = local_res_item[0]
             if res_item is not None:
-                eval(f'result.{item_name}.append("{local_res_item}")')
+                method = getattr(result, item_name).append
+                method(str(local_res_item))
 
         # 提取发音信息
         pronunciations = parsed_res.get("pronunciations", [])
@@ -137,9 +139,10 @@ class PotAppWordHistoryBD:
 
 def getLastYesterdaySecTimestamp() -> int:
     now = datetime.now()
-    yesterday = now - timedelta(days=1)
+    yesterday = now - timedelta(days=0)
     yesterday_235959 = yesterday.replace(hour=23, minute=59, second=59, microsecond=999)
     timestamp = yesterday_235959.timestamp()
+    print(int(timestamp * 1000))
 
     return int(timestamp * 1000) # 精确到毫秒
 
@@ -148,3 +151,4 @@ if __name__ == '__main__':
     pot_db = PotAppWordHistoryBD(db_name='history.db', table_name='history')
     yesterday = getLastYesterdaySecTimestamp()
     pot_db.procDBParse(yesterday)
+    # print(pot_db._getTitleFromSqlDB())

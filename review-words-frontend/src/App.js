@@ -15,7 +15,7 @@ const App = () => {
     const year = String(today.getFullYear()).slice(-2); // Get last two digits of year
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    const dateStr = `${year}-${month}-${day}`;
+    const dateStr = `${year}-${month}-${day} 23:59:59`;
 
     const fetchData = async () => {
       try {
@@ -25,7 +25,6 @@ const App = () => {
           throw new Error(errorData.error || 'Failed to fetch data');
         }
         const data = await response.json();
-        console.log(data);
         setWords(data); // No longer wrap in an array
         setLoading(false);
       } catch (err) {
@@ -37,7 +36,7 @@ const App = () => {
     fetchData();
   }, []);
 
- const handleNextWord = () => {
+  const handleNextWord = () => {
     if (currentWordIndex < words.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
     }
