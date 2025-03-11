@@ -1,0 +1,46 @@
+.card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 20px;
+  width: 400px;
+  box-shadow: 2px 2px 5px #888888;
+}
+
+.word {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.pronunciation {
+  margin-bottom: 10px;
+}
+
+.pronunciation-item {
+  margin-right: 10px;
+  color: #666;
+}
+
+.explanations {
+  margin-bottom: 10px;
+}
+
+.explanation-item {
+  margin-bottom: 5px;
+}
+
+.trait {
+  font-style: italic;
+  margin-right: 5px;
+}
+
+.examples {
+  margin-top: 10px;
+}
+
+.example-item {
+  margin-bottom: 5px;
+}
+.exampleEn {
+    color: blue;
+}
