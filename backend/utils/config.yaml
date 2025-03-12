@@ -1,0 +1,4 @@
+# 数据库配置
+database:
+  db_name: "C:\\Users\\10941\\AppData\\Roaming\\com.pot-app.desktop\\history.db"
+  table_name: "history"

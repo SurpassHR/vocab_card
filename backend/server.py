@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from potapp_db import PotAppWordHistoryBD
-from utils import date_string_to_timestamp
+from utils.date_utils import date_string_to_timestamp
+from utils.config_utils import Config
 
 app = FastAPI()
 
@@ -23,5 +24,8 @@ async def getCollectionByDate(date: str):
     timestamp = date_string_to_timestamp(date)
     if timestamp is None:
         return {"error": "date type wrong"}
-    pot_db = PotAppWordHistoryBD(db_name='history.db', table_name='history')
+    config_mgr = Config("utils/config.yaml")
+    db_name = config_mgr.get("database.db_name")
+    table_name = config_mgr.get("database.table_name")
+    pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
     return pot_db.procDBParse(timestamp)

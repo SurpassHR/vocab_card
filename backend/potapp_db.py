@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timedelta
 from collections import namedtuple
 from typing import List, Optional
+from utils.config_utils import Config
 
 ITEM = namedtuple('Item', ['id', 'text', 'source', 'target', 'service', 'result', 'timestamp'])
 RESULT = namedtuple('Result', ['text', 'region', 'symbol', 'trait', 'meaning', 'explain', 'exampleZh', 'exampleEn'])
@@ -12,7 +13,10 @@ class PotAppWordHistoryBD:
     def __init__(self, db_name: str, table_name: str):
         self.db_name = db_name
         self.table_name = table_name
-        self.cur = sqlite3.connect(db_name).cursor()
+        try:
+            self.cur = sqlite3.connect(db_name).cursor()
+        except:
+            print("connect to db failed.")
 
     def procDBParse(self, date: str) -> Optional[List[dict]]:
         res = self._getCambDictDataFromSqlDBByData(date)
@@ -142,13 +146,17 @@ def getLastYesterdaySecTimestamp() -> int:
     yesterday = now - timedelta(days=0)
     yesterday_235959 = yesterday.replace(hour=23, minute=59, second=59, microsecond=999)
     timestamp = yesterday_235959.timestamp()
-    print(int(timestamp * 1000))
+    # print(int(timestamp * 1000))
 
     return int(timestamp * 1000) # 精确到毫秒
 
 if __name__ == '__main__':
     DEBUG_FLG = True
-    pot_db = PotAppWordHistoryBD(db_name='history.db', table_name='history')
+
+    config_mgr = Config("utils/config.yaml")
+    db_name = config_mgr.get("database.db_name")
+    table_name = config_mgr.get("database.table_name")
+
+    pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
     yesterday = getLastYesterdaySecTimestamp()
     pot_db.procDBParse(yesterday)
-    # print(pot_db._getTitleFromSqlDB())
