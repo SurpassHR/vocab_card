@@ -3,18 +3,16 @@
   margin: 16px;
   width: 100%;
   max-width: 450px;
-  border: 1px solid #e0e0e0;
+  border: 20px solid #f9f9f9;
   background-color: #f9f9f9;
   border-radius: 8px; /* 示例圆角，你可以根据你的设计调整 */
-  padding: 15px; /* 示例内边距，你可以根据你的设计调整 */
-  overflow: hidden; /* 关键: 隐藏超出 max-height 的内容 */
-  transition: max-height 0.5s ease-in-out; /* 添加 max-height 过渡动画 */
+  overflow: scroll; /* 关键: 隐藏超出 max-height 的内容 */
   max-height: 100px; /* 设置 card 的初始最大高度，根据你的卡片初始内容高度调整 */
+  transition: max-height 0.5s ease-in-out; /* 添加 max-height 过渡动画 */
 }
 
 .card:hover {
-  max-height: 1000px; /* 设置 hover 时的最大高度，确保足够显示所有内容，你可以根据实际内容调整 */
-  transition: 0.5s ease-in-out; /* 添加 max-height 过渡动画 */
+  max-height: 500px; /* 设置 hover 时的最大高度，确保足够显示所有内容，你可以根据实际内容调整 */
   /*  你可以添加其他 hover 时的样式，例如 box-shadow 等 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 示例阴影，你可以根据你的设计调整 */
 }
