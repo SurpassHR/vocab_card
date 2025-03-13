@@ -1,46 +1,89 @@
 .card {
-  border: 1px solid #ccc;
-  padding: 20px;
-  margin: 20px;
-  width: 400px;
-  box-shadow: 2px 2px 5px #888888;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 示例阴影，你可以根据你的设计调整 */
+  margin: 16px;
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid #e0e0e0;
+  background-color: #f9f9f9;
+  border-radius: 8px; /* 示例圆角，你可以根据你的设计调整 */
+  padding: 15px; /* 示例内边距，你可以根据你的设计调整 */
+  overflow: hidden; /* 关键: 隐藏超出 max-height 的内容 */
+  transition: max-height 0.5s ease-in-out; /* 添加 max-height 过渡动画 */
+  max-height: 100px; /* 设置 card 的初始最大高度，根据你的卡片初始内容高度调整 */
+}
+
+.card:hover {
+  max-height: 1000px; /* 设置 hover 时的最大高度，确保足够显示所有内容，你可以根据实际内容调整 */
+  transition: 0.5s ease-in-out; /* 添加 max-height 过渡动画 */
+  /*  你可以添加其他 hover 时的样式，例如 box-shadow 等 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 示例阴影，你可以根据你的设计调整 */
+}
+
+.index {
+  color: #888;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
 }
 
 .word {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
 }
 
 .pronunciation {
-  margin-bottom: 10px;
+  /* pronunciation 的样式，保持不变 */
+  margin-bottom: 8px; /* 示例 margin，你可以根据你的设计调整 */
 }
 
 .pronunciation-item {
-  margin-right: 10px;
-  color: #666;
+  /* pronunciation-item 的样式，保持不变 */
+  margin-right: 10px; /* 示例 margin，你可以根据你的设计调整 */
+  font-size: 0.9em; /* 示例字体大小，你可以根据你的设计调整 */
+  color: #777; /* 示例颜色，你可以根据你的设计调整 */
 }
 
 .explanations {
-  margin-bottom: 10px;
+  /* explanations 的样式，保持不变 */
+  margin-bottom: 10px; /* 示例 margin，你可以根据你的设计调整调整 */
 }
 
 .explanation-item {
-  margin-bottom: 5px;
+  /* explanation-item 的样式，保持不变 */
+  margin-bottom: 5px; /* 示例 margin，你可以根据你的设计调整 */
 }
 
 .trait {
-  font-style: italic;
-  margin-right: 5px;
+  /* trait 的样式，保持不变 */
+  font-weight: bold; /* 示例加粗，你可以根据你的设计调整 */
+  margin-right: 5px; /* 示例 margin，你可以根据你的设计调整 */
+}
+
+.meaning {
+  font-weight: 500;
+  color: #28a745;
+}
+
+.explain {
+  color: #6c757d;
 }
 
 .examples {
-  margin-top: 10px;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 .example-item {
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
+
 .exampleEn {
-  color: blue;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.exampleZh {
+  color: #28a745;
 }
