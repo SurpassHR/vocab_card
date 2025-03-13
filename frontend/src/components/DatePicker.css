@@ -1,0 +1,82 @@
+.ui-datepicker {
+  width: 280px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ui-datepicker-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.ui-datepicker-prev,
+.ui-datepicker-next {
+  cursor: pointer;
+  color: #007bff;
+  font-size: 1.2em;
+}
+
+.ui-datepicker-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.ui-datepicker-calendar {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ui-datepicker-calendar th,
+.ui-datepicker-calendar td {
+  padding: 8px;
+  text-align: center;
+}
+
+.ui-datepicker-calendar th {
+  background-color: #e8f0fe;
+  color: #555;
+  font-weight: 500;
+}
+
+.ui-datepicker-calendar td {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.ui-datepicker-calendar td:hover {
+  background-color: #f0f0f0;
+}
+
+.ui-datepicker-calendar td.ui-datepicker-today {
+  background-color: #cce5ff;
+}
+
+.ui-datepicker-calendar td.ui-datepicker-current-day {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 600;
+}
+
+input[type="text"].hasDatepicker {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+  margin: 10px;
+}
+
+input[type="text"].hasDatepicker:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  background-color: #fff;
+}

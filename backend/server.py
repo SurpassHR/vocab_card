@@ -27,5 +27,6 @@ async def getCollectionByDate(date: str):
     config_mgr = Config("utils/config.yaml")
     db_name = config_mgr.get("database.db_name")
     table_name = config_mgr.get("database.table_name")
+    print(f"reading db_name: {db_name}, table_name: {table_name}")
     pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
     return pot_db.procDBParse(timestamp)

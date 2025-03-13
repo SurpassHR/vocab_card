@@ -1,12 +1,12 @@
 import sqlite3
 import json
 from datetime import datetime, timedelta
-from collections import namedtuple
 from typing import List, Optional
+from utils.date_utils import date_string_to_timestamp, from_timestamp_to_str
 from utils.config_utils import Config
+from utils.public_utils import list_dedup
+from utils.public_def import RESULT, ITEM
 
-ITEM = namedtuple('Item', ['id', 'text', 'source', 'target', 'service', 'result', 'timestamp'])
-RESULT = namedtuple('Result', ['text', 'region', 'symbol', 'trait', 'meaning', 'explain', 'exampleZh', 'exampleEn'])
 DEBUG_FLG = False
 
 class PotAppWordHistoryBD:
@@ -26,9 +26,8 @@ class PotAppWordHistoryBD:
             if structured_result is None:
                 continue
             if DEBUG_FLG:
-                return self._formatResult(structured_result)
-            else:
                 self._formatResult(structured_result)
+            else:
                 res_list.append(self._formatOutput(structured_result))
         return res_list
 
@@ -46,7 +45,13 @@ class PotAppWordHistoryBD:
         return column_names
 
     def _getCambDictDataFromSqlDBByData(self, date: str) -> ITEM:
-        res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp < \'{date}\' AND timestamp >= \'{date - 86400000}\' ORDER BY id DESC LIMIT 20 OFFSET 0").fetchall()
+        if DEBUG_FLG:
+            print(date)
+
+        print("INFO: start date:\t", from_timestamp_to_str(date), flush=True)
+        print("INFO: end date:  \t", from_timestamp_to_str(date - 86400000), flush=True)
+
+        res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp <= \'{date}\' AND timestamp >= \'{date - 86400000}\'").fetchall()
         struct_list = [ITEM(*item) for item in res]
         dict_list = [item._asdict() for item in struct_list]
         return dict_list
@@ -146,7 +151,6 @@ def getLastYesterdaySecTimestamp() -> int:
     yesterday = now - timedelta(days=0)
     yesterday_235959 = yesterday.replace(hour=23, minute=59, second=59, microsecond=999)
     timestamp = yesterday_235959.timestamp()
-    # print(int(timestamp * 1000))
 
     return int(timestamp * 1000) # 精确到毫秒
 
@@ -158,5 +162,4 @@ if __name__ == '__main__':
     table_name = config_mgr.get("database.table_name")
 
     pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
-    yesterday = getLastYesterdaySecTimestamp()
-    pot_db.procDBParse(yesterday)
+    pot_db.procDBParse(date_string_to_timestamp('25-03-04'))

@@ -4,4 +4,4 @@
 cd backend && uvicorn server:app --reload &
 
 # 启动前端
-cd frontend && npm start
+cd frontend && npm start &
