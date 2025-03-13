@@ -23,6 +23,7 @@ const App = () => {
       const data = await response.json();
       setWords(data);
       setLoading(false);
+      setCurrentWordIndex(0);
     } catch (err) {
       setError(err.message);
       setLoading(false);
@@ -32,12 +33,16 @@ const App = () => {
   const handleNextWord = useCallback(() => {
     if (currentWordIndex < words.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
+    } else {
+      setCurrentWordIndex(0);
     }
   }, [currentWordIndex, words.length]);
 
   const handlePrevWord = useCallback(() => {
     if (currentWordIndex > 0) {
       setCurrentWordIndex(currentWordIndex - 1);
+    } else {
+      setCurrentWordIndex(words.length - 1);
     }
   }, [currentWordIndex]);
 

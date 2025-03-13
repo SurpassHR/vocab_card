@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 from utils.date_utils import date_string_to_timestamp, from_timestamp_to_str
 from utils.config_utils import Config
-from utils.public_utils import list_dedup
 from utils.public_def import RESULT, ITEM
 
 DEBUG_FLG = False
@@ -20,7 +19,7 @@ class PotAppWordHistoryBD:
 
     def procDBParse(self, date: str) -> Optional[List[dict]]:
         res = self._getCambDictDataFromSqlDBByData(date)
-        res_list = []
+        res_dict = {}
         for item in res:
             structured_result = self._parseResult(item['text'], item['result'])
             if structured_result is None:
@@ -28,8 +27,10 @@ class PotAppWordHistoryBD:
             if DEBUG_FLG:
                 self._formatResult(structured_result)
             else:
-                res_list.append(self._formatOutput(structured_result))
-        return res_list
+                vocab_dict = self._formatOutput(structured_result)
+                if vocab_dict:
+                    res_dict[vocab_dict['word']] = vocab_dict
+        return list(res_dict.values())
 
     # 获取历史数据数量
     def _getDataNumFromSqlDB(self) -> int:
@@ -162,4 +163,4 @@ if __name__ == '__main__':
     table_name = config_mgr.get("database.table_name")
 
     pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
-    pot_db.procDBParse(date_string_to_timestamp('25-03-04'))
+    pot_db.procDBParse(date_string_to_timestamp('25-03-13'))
