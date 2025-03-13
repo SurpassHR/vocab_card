@@ -1,10 +1,10 @@
 import sqlite3
 import json
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List, Optional, Dict
 from utils.date_utils import date_string_to_timestamp, from_timestamp_to_str
 from utils.config_utils import Config
-from utils.public_def import RESULT, ITEM
+from utils.public_def import RESULT, RESULT_2, MEANING, ITEM
 
 DEBUG_FLG = False
 
@@ -22,14 +22,18 @@ class PotAppWordHistoryBD:
         res_dict = {}
         for item in res:
             structured_result = self._parseResult(item['text'], item['result'])
+            structured_result = self._parseResult2(item['text'], item['result'])
+            # print(structured_result)
             if structured_result is None:
                 continue
             if DEBUG_FLG:
-                self._formatResult(structured_result)
+                # self._formatResult(structured_result)
+                pass
             else:
-                vocab_dict = self._formatOutput(structured_result)
+                vocab_dict = self._formatOutput2(structured_result)
                 if vocab_dict:
                     res_dict[vocab_dict['word']] = vocab_dict
+        print(list(res_dict.values()))
         return list(res_dict.values())
 
     # 获取历史数据数量
@@ -116,17 +120,71 @@ class PotAppWordHistoryBD:
 
         return result
 
+    def _parseResult2(self, text:str, result_str: str) -> RESULT_2:
+        try:
+            parsed_res = json.loads(result_str)
+        except:
+            return
+
+        result = RESULT_2(
+            text=text,
+            region=[],
+            symbol=[],
+            meaning=[],
+        )
+
+        def _appendListItem(result, item_name: str, res_item) -> None:
+            local_res_item = res_item
+            if isinstance(local_res_item, list):
+                local_res_item = local_res_item[0]
+            if res_item is not None:
+                method = getattr(result, item_name).append
+                method(local_res_item)
+
+        # 提取发音信息
+        pronunciations = parsed_res.get("pronunciations", [])
+        for pron in pronunciations:
+            region = pron.get("region")
+            _appendListItem(result, 'region', region)
+
+            symbol = pron.get("symbol")
+            _appendListItem(result, 'symbol', symbol)
+
+            _ = pron.get("voice", [])
+
+        # 提取解释信息
+        explanations = parsed_res.get("explanations", [])
+        for exp in explanations:
+            meaning = MEANING(
+                mean=exp.get("meaning"),
+                trait=exp.get("trait"),
+                explain=exp.get("explain"),
+                exampleEn=[],
+                exampleZh=[],
+            )
+            examplesEn = exp.get("exampleEn", [])
+            for example in examplesEn:
+                _appendListItem(meaning, 'exampleEn', example)
+
+            examplesZh = exp.get("exampleZh", [])
+            for example in examplesZh:
+                _appendListItem(meaning, 'exampleZh', example)
+
+            _appendListItem(result, 'meaning', meaning)
+
+        return result
+
     def _formatResult(self, result: RESULT) -> None:
         print(f"生词: {result.text}")
         for r, s in zip(result.region, result.symbol):
             print(f"  - {r}: {s}")
 
         print("释义: ")
-        for t, m, e in zip(result.trait, result.meaning, result.explain):
+        for e, m, t in zip(result.explain, result.meaning, result.trait):
             print(f"  - {e} - {m}, {t}")
 
         print("例句:")
-        for zh, en in zip(result.exampleZh, result.exampleEn):
+        for en, zh in zip(result.exampleEn, result.exampleZh):
             print(f"  - {en} - {zh}")
 
         print('\n')
@@ -150,6 +208,21 @@ class PotAppWordHistoryBD:
 
         return vocab_dict
 
+    def _formatOutput2(self, result: RESULT) -> Optional[dict]:
+        vocab_dict = {
+            'word': result.text,
+            'pronounce': [],
+            'meaning': {}
+        }
+
+        for r, s in zip(result.region, result.symbol):
+            vocab_dict['pronounce'].append({'region': r, 'symbol': s})
+
+        for mean in result.meaning:
+            vocab_dict['meaning'][mean.mean] = {'trait': mean.trait, 'explain': mean.explain, 'exampleEn': mean.exampleEn, 'exampleZh': mean.exampleZh}
+
+        return vocab_dict
+
 def getLastYesterdaySecTimestamp() -> int:
     now = datetime.now()
     yesterday = now - timedelta(days=0)
@@ -159,11 +232,11 @@ def getLastYesterdaySecTimestamp() -> int:
     return int(timestamp * 1000) # 精确到毫秒
 
 if __name__ == '__main__':
-    DEBUG_FLG = True
+    DEBUG_FLG = False
 
     config_mgr = Config("utils/config.yaml")
     db_name = config_mgr.get("database.db_name")
     table_name = config_mgr.get("database.table_name")
 
     pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
-    pot_db.procDBParse(date_string_to_timestamp('25-03-13'))
+    pot_db.procDBParse(date_string_to_timestamp('25-03-11'))
