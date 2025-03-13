@@ -1,0 +1,4 @@
+# 数据库配置
+database:
+  db_name: "your database path"
+  table_name: "history"
