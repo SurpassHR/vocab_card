@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import List, Optional, Dict
 from utils.date_utils import date_string_to_timestamp, from_timestamp_to_str
 from utils.config_utils import Config
-from utils.public_def import RESULT, RESULT_2, MEANING, ITEM
+from utils.public_def import RESULT, MEANING, ITEM
 
 DEBUG_FLG = False
 
@@ -22,7 +22,6 @@ class PotAppWordHistoryBD:
         res_dict = {}
         for item in res:
             structured_result = self._parseResult(item['text'], item['result'])
-            structured_result = self._parseResult2(item['text'], item['result'])
             # print(structured_result)
             if structured_result is None:
                 continue
@@ -30,7 +29,7 @@ class PotAppWordHistoryBD:
                 # self._formatResult(structured_result)
                 pass
             else:
-                vocab_dict = self._formatOutput2(structured_result)
+                vocab_dict = self._formatOutput(structured_result)
                 if vocab_dict:
                     res_dict[vocab_dict['word']] = vocab_dict
         print(list(res_dict.values()))
@@ -71,62 +70,6 @@ class PotAppWordHistoryBD:
             return
 
         result = RESULT(
-            text=text,
-            region=[],
-            symbol=[],
-            trait=[],
-            meaning=[],
-            explain=[],
-            exampleZh=[],
-            exampleEn=[]
-        )
-
-        def _appendResult(result: RESULT, item_name: str, res_item: str) -> None:
-            local_res_item = res_item
-            if isinstance(local_res_item, list):
-                local_res_item = local_res_item[0]
-            if res_item is not None:
-                method = getattr(result, item_name).append
-                method(str(local_res_item))
-
-        # 提取发音信息
-        pronunciations = parsed_res.get("pronunciations", [])
-        for pron in pronunciations:
-            region = pron.get("region")
-            _appendResult(result, 'region', region)
-
-            symbol = pron.get("symbol")
-            _appendResult(result, 'symbol', symbol)
-
-            _ = pron.get("voice", [])
-
-        # 提取解释信息
-        explanations = parsed_res.get("explanations", [])
-        for exp in explanations:
-            trait = exp.get("trait")
-            _appendResult(result, 'trait', trait)
-
-            meaning = exp.get("meaning")
-            _appendResult(result, 'meaning', meaning)
-
-            explain = exp.get("explain")
-            _appendResult(result, 'explain', explain)
-
-            exampleZh = exp.get("exampleZh")
-            _appendResult(result, 'exampleZh', exampleZh)
-
-            exampleEn = exp.get("exampleEn")
-            _appendResult(result, 'exampleEn', exampleEn)
-
-        return result
-
-    def _parseResult2(self, text:str, result_str: str) -> RESULT_2:
-        try:
-            parsed_res = json.loads(result_str)
-        except:
-            return
-
-        result = RESULT_2(
             text=text,
             region=[],
             symbol=[],
@@ -190,25 +133,6 @@ class PotAppWordHistoryBD:
         print('\n')
 
     def _formatOutput(self, result: RESULT) -> Optional[dict]:
-        vocab_dict = {
-            'word': result.text,
-            'pronounce': [],
-            'explanations': [],
-            'example': []
-        }
-
-        for r, s in zip(result.region, result.symbol):
-            vocab_dict['pronounce'].append({'region': r, 'symbol': s})
-
-        for t, m, e in zip(result.trait, result.meaning, result.explain):
-            vocab_dict['explanations'].append({'trait': t, 'meaning': m, 'explain': e})
-
-        for en, zh in zip(result.exampleEn, result.exampleZh):
-            vocab_dict['example'].append({'exampleEn': en, 'exampleZh': zh})
-
-        return vocab_dict
-
-    def _formatOutput2(self, result: RESULT) -> Optional[dict]:
         vocab_dict = {
             'word': result.text,
             'pronounce': [],
