@@ -1,12 +1,13 @@
 import { useState, React } from 'react';
 import './Card.css';
+import { nanoid } from 'nanoid';
 
 const Card = ({ wordData, currIdx, totalNum }) => {
   if (!wordData) {
     return <div>No word data available.</div>;
   }
 
-  const { word, pronounce, explanations, example } = wordData;
+  const { word, pronounce, meaning } = wordData;
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -25,21 +26,21 @@ const Card = ({ wordData, currIdx, totalNum }) => {
           ))}
         </div>
         <div className="explanations">
-          {explanations.map((exp, index) => (
-            <div key={index} className="explanation-item">
-              <span className="trait">{exp.trait}</span>
-              <span className="meaning">{exp.meaning}</span>
-              <span className="explain">{exp.explain}</span>
-            </div>
-          ))}
-        </div>
-        <div className="examples">
-          {example.map((ex, index) => (
-            <div key={index} className="example-item">
-              <span className="exampleEn">{ex.exampleEn}</span>
-              <span className="exampleZh">{ex.exampleZh}</span>
-            </div>
-          ))}
+          {Object.keys(meaning).map((key, index) => {
+            return (
+              <div key={index} className="explanation-item">
+                <span className="trait">{meaning[key].trait}</span>
+                <span className="explain">{key + ' ' + meaning[key].explain}</span>
+                <br />
+                {meaning[key].exampleEn.map((example, index) => (
+                  <>
+                    <span key={nanoid()} className="exampleEn">{meaning[key].exampleEn[index]}</span>
+                    <br />
+                    <span key={nanoid()} className="exampleZh">{meaning[key].exampleZh[index]}</span>
+                  </>
+                ))}
+              </div>)
+          })}
         </div>
       </div>
     </div>
