@@ -7,7 +7,7 @@
   background-color: #f9f9f9;
   border-radius: 8px; /* 示例圆角，你可以根据你的设计调整 */
   overflow: scroll; /* 关键: 隐藏超出 max-height 的内容 */
-  max-height: 100px; /* 设置 card 的初始最大高度，根据你的卡片初始内容高度调整 */
+  max-height: 80px; /* 设置 card 的初始最大高度，根据你的卡片初始内容高度调整 */
   transition: max-height 0.5s ease-in-out; /* 添加 max-height 过渡动画 */
 }
 
