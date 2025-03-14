@@ -45,14 +45,17 @@ class PotAppWordHistoryBD:
         column_names = self.cur.execute(f"PRAGMA table_info({self.table_name})").fetchall()
         return column_names
 
-    def _getCambDictDataFromSqlDBByData(self, date: str) -> ITEM:
+    def _getCambDictDataFromSqlDBByData(self, date: str) -> List[ITEM]:
         if DEBUG_FLG:
             print(date)
 
         print("INFO: start date:\t", from_timestamp_to_str(date), flush=True)
         print("INFO: end date:  \t", from_timestamp_to_str(date - 86400000), flush=True)
 
-        res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp <= \'{date}\' AND timestamp >= \'{date - 86400000}\'").fetchall()
+        try:
+            res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp <= \'{date}\' AND timestamp >= \'{date - 86400000}\'").fetchall()
+        except:
+            return []
         struct_list = [ITEM(*item) for item in res]
         dict_list = [item._asdict() for item in struct_list]
         return dict_list
