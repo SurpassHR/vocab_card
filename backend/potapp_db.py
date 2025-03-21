@@ -1,8 +1,8 @@
 import sqlite3
 import json
 from datetime import datetime, timedelta
-from typing import List, Optional, Dict
-from utils.date_utils import date_string_to_timestamp, from_timestamp_to_str
+from typing import List, Optional
+from utils.date_utils import date_string_to_timestamp, DatePosition
 from utils.config_utils import Config
 from utils.public_def import RESULT, MEANING, ITEM
 
@@ -17,22 +17,21 @@ class PotAppWordHistoryBD:
         except:
             print("connect to db failed.")
 
-    def procDBParse(self, date: str) -> Optional[List[dict]]:
-        res = self._getCambDictDataFromSqlDBByData(date)
+    def procDBParse(self, startDateTimestamp: int, endDateTimestamp: int) -> Optional[List[dict]]:
+        res = self._getCambDictDataFromSqlDBByData(startDateTimestamp, endDateTimestamp)
         res_dict = {}
         for item in res:
             structured_result = self._parseResult(item['text'], item['result'])
-            # print(structured_result)
             if structured_result is None:
                 continue
             if DEBUG_FLG:
-                # self._formatResult(structured_result)
+                self._formatResult(structured_result)
                 pass
             else:
                 vocab_dict = self._formatOutput(structured_result)
                 if vocab_dict:
                     res_dict[vocab_dict['word']] = vocab_dict
-        print(list(res_dict.values()))
+
         return list(res_dict.values())
 
     # 获取历史数据数量
@@ -40,7 +39,6 @@ class PotAppWordHistoryBD:
         history_num = self.cur.execute(f"SELECT COUNT(*) FROM {self.table_name}").fetchone()
         if history_num is not None:
             history_num = history_num[0]
-        # print(history_num)
         return history_num
 
     # 获取数据库表头
@@ -48,19 +46,15 @@ class PotAppWordHistoryBD:
         column_names = self.cur.execute(f"PRAGMA table_info({self.table_name})").fetchall()
         return column_names
 
-    def _getCambDictDataFromSqlDBByData(self, date: str) -> List[ITEM]:
-        if DEBUG_FLG:
-            print(date)
-
-        print("INFO: start date:\t", from_timestamp_to_str(date), flush=True)
-        print("INFO: end date:  \t", from_timestamp_to_str(date - 86400000), flush=True)
-
+    def _getCambDictDataFromSqlDBByData(self, startTimestamp: int, endTimestamp: int) -> List[ITEM]:
         try:
-            res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp <= \'{date}\' AND timestamp >= \'{date - 86400000}\'").fetchall()
+            res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp >= \'{startTimestamp}\' AND timestamp <= \'{endTimestamp}\'").fetchall()
         except:
             return []
+
         struct_list = [ITEM(*item) for item in res]
         dict_list = [item._asdict() for item in struct_list]
+
         return dict_list
 
     def _parseResult(self, text:str, result_str: str) -> RESULT:
@@ -156,11 +150,20 @@ def getLastYesterdaySecTimestamp() -> int:
     return int(timestamp * 1000) # 精确到毫秒
 
 if __name__ == '__main__':
-    DEBUG_FLG = False
+    DEBUG_FLG = True
 
     config_mgr = Config("utils/config.yaml")
     db_name = config_mgr.get("database.db_name")
     table_name = config_mgr.get("database.table_name")
 
     pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
-    pot_db.procDBParse(date_string_to_timestamp('25-03-11'))
+    pot_db.procDBParse(
+        date_string_to_timestamp(
+            date_str='25-03-11',
+            date_position=DatePosition.LEFT_SIDE
+        ),
+        date_string_to_timestamp(
+            date_str='25-03-11',
+            date_position=DatePosition.RIGHT_SIDE
+        )
+    )

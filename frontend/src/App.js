@@ -9,13 +9,30 @@ const App = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  let startDateStr = '1999-12-10';
 
-  const fetchData = async () => {
-    console.log("fetch ", startDateStr);
-    console.log(`http://127.0.0.1:8000/collections/${startDateStr}`);
+  const fetchRangeData = async (startDate, endDate) => {
+    const url = 'http://127.0.0.1:8000';
+    const api = '/form';
+    const target_api = url + api;
+    const method = 'POST';
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "startDate": `${startDate}`,
+      "endDate": `${endDate}`
+    });
+
+    var requestOptions = {
+      method: method,
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
     try {
-      const response = await fetch(`http://127.0.0.1:8000/collections/${startDateStr}`);
+      const response = await fetch(target_api, requestOptions);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch data');
@@ -54,9 +71,7 @@ const App = () => {
   }
 
   const handleDateChange = (start, end) => {
-    console.log(start);
-    startDateStr = formatDate(start);
-    fetchData();
+    fetchRangeData(formatDate(start), formatDate(end));
   };
 
   useEffect(() => {

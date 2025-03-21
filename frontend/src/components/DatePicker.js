@@ -8,10 +8,22 @@ function DateRangePicker({ onDateChange }) {
 
   const handleChange = (dates) => {
     const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-    if (onDateChange) {
-      onDateChange(start, end); // 将 startDate 和 endDate 传递给外部
+
+    // 检查两个日期是否都已选择
+    if (start && end) {
+      // 检查日期是否发生了变化
+      if (start.getTime() !== (startDate ? startDate.getTime() : null) ||
+          end.getTime() !== (endDate ? endDate.getTime() : null)) {
+        setStartDate(start);
+        setEndDate(end);
+        if (onDateChange) {
+          onDateChange(start, end);
+        }
+      }
+    } else {
+      // 如果其中一个日期被清除，也更新状态
+      setStartDate(start);
+      setEndDate(end);
     }
   };
 
