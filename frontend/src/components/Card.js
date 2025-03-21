@@ -30,9 +30,12 @@ const Card = ({ wordData, currIdx, totalNum }) => {
             return (
               <div key={index} className="explanation-item">
                 <span className="trait">{meaning[key].trait}</span>
-                <span className="explain">{key + ' ' + meaning[key].explain}</span>
+                <span className="explain">
+                  <strong>{key != 'null' ? key : ''}</strong>
+                  {' ' + meaning[key].explain}
+                </span>
                 <br />
-                {meaning[key].exampleEn.map((example, index) => (
+                {meaning[key].exampleEn.map((_, index) => (
                   <>
                     <span key={nanoid()} className="exampleEn">{meaning[key].exampleEn[index]}</span>
                     <br />
