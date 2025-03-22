@@ -1,0 +1,37 @@
+{
+  "name": "src-electron",
+  "version": "1.0.0",
+  "description": "A electron-packaged frontend for vocabulary review desktop application.",
+  "author": "Hu Rui",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "set DEV_ENV=true&& electron .",
+    "build": "set BUILD_PATH=../dist-electron&& set DEV_ENV=false&& electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^35.0.3",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.vocabreviwe.application",
+    "directories": {
+      "output": "../dist-electron"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

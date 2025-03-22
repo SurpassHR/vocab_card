@@ -1,0 +1,18 @@
+{
+  "name": "electron-frontend",
+  "version": "1.0.0",
+  "description": "test desc",
+  "license": "ISC",
+  "author": "Hu Rui",
+  "scripts": {
+    "dev:electron": "cd src-electron&& npm run dev",
+    "build:electron": "cd src-electron&& npm run build",
+    "dev:react": "cd src-react&& npm run dev",
+    "build:react": "cd src-react&& npm run build",
+    "dev:all": "set BROWSER=none&& concurrently \"npm run dev:react\" \"npm run dev:electron\"",
+    "build:all": "npm run build:react&& npm run build:electron"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
