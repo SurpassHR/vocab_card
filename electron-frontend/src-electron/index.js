@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, globalShortcut } = require('electron');
 const path = require('path')
 
 function createWindow() {
@@ -6,11 +6,18 @@ function createWindow() {
     width: 800,
     height: 600,
     alwaysOnTop: true,
+    frame: false
   });
   const isDev = process.env.DEV_ENV;
   const url = isDev === 'true' ? 'http://127.0.0.1:3000' : path.join(__dirname, '../../dist-react/index.html');
   mainWindow.loadURL(url);
   mainWindow.webContents.openDevTools();
+}
+
+function registerWindowShortcut() {
+  globalShortcut.register('CommandOrControl+W', () => {
+    app.quit();
+  })
 }
 
 app.on('ready', () => {
@@ -21,6 +28,7 @@ app.on('ready', () => {
       createWindow();
     }
   })
+  registerWindowShortcut();
 })
 
 app.on('window-all-closed', () => {

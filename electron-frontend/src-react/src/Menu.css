@@ -1,0 +1,61 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#custom-menu {
+  width: 100%;
+  background: linear-gradient(#F0EFF0, #D3D1D3);
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+}
+
+#custom-menu ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+#custom-menu ul li {
+  float: left;
+  width: 50px;
+  text-align: center;
+  background-color: #c6c6c6;
+  box-shadow: grey, 1px 0 0 0;
+  margin: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+/* 菜单按钮重写 */
+.button-container {
+  margin-top: 0.7rem;
+  margin-bottom: 0.5rem;
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.window-button {
+  right: 1080px;
+  size: 100px;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+#minimize {
+  background-color: #26C342;
+  border: #00b800 solid;
+}
+
+#maximize {
+  background-color: #F5B931;
+  border: rgb(236, 185, 65) solid;
+}
+
+#close {
+  background-color: #ED4F54;
+  border: #ea453c solid;
+}
