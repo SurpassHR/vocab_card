@@ -6,12 +6,18 @@ function createWindow() {
     width: 800,
     height: 600,
     alwaysOnTop: true,
-    frame: false
+    frame: false,
+    webPreferences: {
+      webSecurity: false
+    }
   });
   const isDev = process.env.DEV_ENV;
-  const url = isDev === 'true' ? `http://127.0.0.1:${process.env.REACT_PORT}` : path.join(__dirname, '../dist-react/index.html');
-  mainWindow.loadURL(url);
-  mainWindow.webContents.openDevTools();
+  if (isDev === 'true') {
+    mainWindow.loadURL(`http://127.0.0.1:${process.env.REACT_PORT}`);
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadURL(path.join(__dirname, 'dist-react/index.html'));
+  }
 }
 
 function registerWindowShortcut() {

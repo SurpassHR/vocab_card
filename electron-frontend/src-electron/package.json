@@ -15,7 +15,13 @@
     "electron-builder": "^25.1.8"
   },
   "build": {
+    "productName": "Vocab-review",
     "appId": "com.vocabreviwe.application",
+    "files": [
+      "dist-react/**/*",
+      "index.js"
+    ],
+    "asar": true,
     "directories": {
       "output": "../dist-electron"
     },
