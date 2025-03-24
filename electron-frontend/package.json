@@ -7,10 +7,13 @@
   "scripts": {
     "dev:electron": "cd src-electron&& npm run dev",
     "build:electron": "cd src-electron&& npm run build",
+    "install:electron": "cd src-electron&& npm install",
     "dev:react": "cd src-react&& npm run dev",
     "build:react": "cd src-react&& npm run build",
+    "install:react": "cd src-react&& npm install",
     "dev:all": "set BROWSER=none&& concurrently \"npm run dev:react\" \"npm run dev:electron\"",
-    "build:all": "npm run build:react&& npm run build:electron"
+    "build:all": "npm run build:react&& npm run build:electron",
+    "install:all": "concurrently \"npm run install:react\" \"npm run install:electron\""
   },
   "dependencies": {
     "concurrently": "^9.1.2"
