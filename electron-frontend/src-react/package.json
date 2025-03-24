@@ -6,9 +6,11 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"react-scripts start\" \"react-devtools\"",
-    "build": "set BUILD_PATH=../dist-react&& react-scripts build"
+    "cross-dev": "cross-env PORT=$REACT_DEV_PORT&& set PORT=%REACT_DEV_PORT%&& react-scripts start",
+    "build": "cross-env BUILD_PATH=../dist-react&& react-scripts build"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "react-dom": "^19.0.0"
   },
   "dependencies": {

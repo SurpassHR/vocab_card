@@ -15,6 +15,8 @@
   list-style: none;
   display: flex;
   align-items: center;
+  -webkit-app-region: no-drag;
+  user-select: none;
 }
 
 #custom-menu ul li {
@@ -30,7 +32,7 @@
 
 /* 菜单按钮重写 */
 .button-container {
-  margin-top: 0.7rem;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   margin-left: auto;
   margin-right: 0.5rem;
@@ -43,16 +45,18 @@
   width: 1rem;
   border-radius: 50%;
   margin-right: 0.5rem;
+  -webkit-app-region: no-drag;
+  user-select: none;
 }
 
 #minimize {
   background-color: #26C342;
-  border: #00b800 solid;
+  border: #00c000 solid;
 }
 
 #maximize {
   background-color: #F5B931;
-  border: rgb(236, 185, 65) solid;
+  border: rgb(231, 180, 61) solid;
 }
 
 #close {

@@ -6,10 +6,11 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "set DEV_ENV=true&& electron .",
-    "build": "set BUILD_PATH=../dist-electron&& set DEV_ENV=false&& electron-builder"
+    "dev": "cross-env DEV_ENV=true&& set DEV_ENV=true&& cross-env REACT_PORT=$REACT_DEV_PORT&& set REACT_PORT=%REACT_DEV_PORT%&& electron .",
+    "build": "cross-env BUILD_PATH=../dist-electron&& set BUILD_PATH=../dist-electron&& cross-env DEV_ENV=false&& set DEV_ENV=false&& set DEV_ENV=false&& electron-builder"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "electron": "^35.0.3",
     "electron-builder": "^25.1.8"
   },

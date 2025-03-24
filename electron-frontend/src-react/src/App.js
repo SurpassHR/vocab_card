@@ -3,7 +3,7 @@ import Card from './components/Card.js';
 import './App.css';
 import './index.css';
 import DateRangePicker from './components/DatePicker.js';
-import NewMenu from './Menu.js';
+import NewMenu from './components/Menu.js';
 
 const App = () => {
   const [words, setWords] = useState([]);

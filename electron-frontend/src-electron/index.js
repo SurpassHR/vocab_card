@@ -9,7 +9,7 @@ function createWindow() {
     frame: false
   });
   const isDev = process.env.DEV_ENV;
-  const url = isDev === 'true' ? 'http://127.0.0.1:3000' : path.join(__dirname, '../../dist-react/index.html');
+  const url = isDev === 'true' ? `http://127.0.0.1:${process.env.REACT_PORT}` : path.join(__dirname, '../dist-react/index.html');
   mainWindow.loadURL(url);
   mainWindow.webContents.openDevTools();
 }

@@ -9,13 +9,17 @@
     "build:electron": "cd src-electron&& npm run build",
     "install:electron": "cd src-electron&& npm install",
     "dev:react": "cd src-react&& npm run dev",
+    "cross-dev:react": "cd src-react&& npm run cross-dev",
     "build:react": "cd src-react&& npm run build",
     "install:react": "cd src-react&& npm install",
-    "dev:all": "set BROWSER=none&& concurrently \"npm run dev:react\" \"npm run dev:electron\"",
+    "dev:all": "set REACT_DEV_PORT=9999&& cross-env BROWSER=none&& set BROWSER=none&& concurrently \"npm run cross-dev:react\" \"npm run dev:electron\"",
     "build:all": "npm run build:react&& npm run build:electron",
     "install:all": "concurrently \"npm run install:react\" \"npm run install:electron\""
   },
   "dependencies": {
     "concurrently": "^9.1.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
