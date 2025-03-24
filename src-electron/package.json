@@ -19,7 +19,14 @@
     "appId": "com.vocabreviwe.application",
     "files": [
       "dist-react/**/*",
+      "!dist-react/package.json",
+      "!dist-react/package-lock.json",
+      "!dist-react/pnpm-lock.yaml",
       "index.js"
+    ],
+    "extraFiles": [
+      "dist-fastapi/**/*",
+      "!**/__pycache__/**/*"
     ],
     "asar": true,
     "directories": {

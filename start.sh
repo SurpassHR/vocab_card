@@ -4,4 +4,4 @@
 cd backend && uvicorn server:app --reload &
 
 # 启动前端
-cd electron-frontend && npm run dev:all &
+npm run dev:all &

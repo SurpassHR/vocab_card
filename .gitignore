@@ -5,3 +5,5 @@ history.db*
 __pycache__
 config.yaml
 dist*
+venv
+.venv
