@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "concurrently \"react-scripts start\" \"react-devtools\"",
     "cross-dev": "cross-env PORT=$REACT_DEV_PORT&& set PORT=%REACT_DEV_PORT%&& react-scripts start",
-    "build": "cross-env BUILD_PATH=../dist-react&& react-scripts build"
+    "build": "cross-env BUILD_PATH=../dist-react&& set BUILD_PATH=../dist-react&& react-scripts build"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
