@@ -5,6 +5,8 @@ from potapp_db import PotAppWordHistoryBD
 from utils.date_utils import date_string_to_timestamp, DatePosition
 from utils.config_utils import Config
 from pydantic import BaseModel
+import signal
+import sys
 
 app = FastAPI()
 
