@@ -1,8 +1,8 @@
 import datetime
-from enum import EnumType
+from enum import Enum
 import tzlocal
 
-class DatePosition(EnumType):
+class DatePosition(Enum):
     LEFT_SIDE = 0
     RIGHT_SIDE = 1
 

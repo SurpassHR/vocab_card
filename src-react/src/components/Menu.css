@@ -51,15 +51,15 @@
 
 #minimize {
   background-color: #26C342;
-  border: #00c000 solid;
+  border: #00c000 solid 0.1rem;
 }
 
 #maximize {
   background-color: #F5B931;
-  border: rgb(231, 180, 61) solid;
+  border: rgb(231, 180, 61) solid 0.1rem;
 }
 
 #close {
   background-color: #ED4F54;
-  border: #ea453c solid;
+  border: #ea453c solid 0.1rem;
 }
