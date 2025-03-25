@@ -22,7 +22,8 @@
       "!dist-react/package.json",
       "!dist-react/package-lock.json",
       "!dist-react/pnpm-lock.yaml",
-      "index.js"
+      "index.js",
+      "preload.js"
     ],
     "extraFiles": [
       "dist-fastapi/**/*",

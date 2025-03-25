@@ -51,5 +51,13 @@ async def getComplicatedData(data: ComplicatedData):
         )
     )
 
+def signal_handler(sig, frame):
+    print('接收到信号，正在清理...')
+    # 在这里添加你的清理代码，例如关闭服务器连接、保存数据等
+    sys.exit(0)
+
 if __name__ == '__main__':
-    uvicorn.run(app="server:app", host="127.0.0.1", port=8000, reload=True)
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGILL, signal_handler)
+    uvicorn.run(app="server:app", host="127.0.0.1", port=8000, reload=False)

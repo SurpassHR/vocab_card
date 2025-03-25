@@ -1,14 +1,17 @@
-const { app, BrowserWindow, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path')
+const { spawn } = require('child_process');
 
+let mainWindow;
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 600,
     height: 1000,
     alwaysOnTop: true,
     frame: false,
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
+      preload: path.resolve(__dirname, './preload.js')
     }
   });
   const isDev = process.env.DEV_ENV;
@@ -20,17 +23,10 @@ function createWindow() {
   }
 }
 
-function registerWindowShortcut() {
-  globalShortcut.register('CommandOrControl+W', () => {
-    app.quit();
-  })
-}
-
 let server;
 function startServer() {
-  const { spawn } = require('child_process');
-
   server = spawn('venv/Scripts/python', ['server.py'], { cwd: './dist-fastapi' });
+  console.log(`启动后端 pid: ${server.pid}`);
 
   // 监听标准输出数据
   server.stdout.on('data', (data) => {
@@ -52,10 +48,54 @@ function startServer() {
   });
 }
 
-function killServer() {
-  if (server) {
-    server.kill('SIGTERM');
+function killWin32Server() {
+  if (server && server.pid) {
+    const command = `taskkill /PID ${server.pid} /F`;
+    spawn('cmd', ['/c', command]);
   }
+}
+
+function killLinuxServer() {
+  if (server && server.pid) {
+    const command = `kill -INT -${server.pid}`;
+    spawn("sh", ["-c", command]);
+  }
+}
+
+function actionCloseAllWindows() {
+  const platform = process.platform;
+  if (platform == 'win32') {
+    killWin32Server();
+  } else if (platform == 'linux') {
+    killLinuxServer();
+  }
+  server.kill("SIGINT");
+  server.kill("SIGTERM");
+  server.kill("SIGKILL");
+
+  if (platform != 'darwin') {
+    app.quit();
+  }
+}
+
+function actionMinimizeWindow() {
+  mainWindow.minimize();
+}
+
+function actionMaximizeWindow() {
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
+  }
+}
+
+// 注册进程间通信
+function registerIPCMsg() {
+  // 窗口控制 api
+  ipcMain.on('close-window', actionCloseAllWindows);
+  ipcMain.on('minimize-window', actionMinimizeWindow);
+  ipcMain.on('maximize-window', actionMaximizeWindow);
 }
 
 app.on('ready', () => {
@@ -67,12 +107,7 @@ app.on('ready', () => {
       createWindow();
     }
   })
-  registerWindowShortcut();
+  registerIPCMsg();
 })
 
-app.on('window-all-closed', () => {
-  killServer();
-  if (process.platform != 'darwin') {
-    app.quit();
-  }
-})
+app.on('window-all-closed', actionCloseAllWindows)
