@@ -1,4 +1,5 @@
 from collections import namedtuple
+from os import getcwd, path
 
 ITEM = namedtuple('Item', ['id', 'text', 'source', 'target', 'service', 'result', 'timestamp'])
 RESULT = namedtuple(
@@ -20,3 +21,5 @@ MEANING = namedtuple(
         'exampleZh', # list
     ]
 )
+
+PROJECT_ROOT = path.join(getcwd(), '../')

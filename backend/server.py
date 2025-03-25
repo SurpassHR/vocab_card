@@ -1,6 +1,6 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 from potapp_db import PotAppWordHistoryBD
 from utils.date_utils import date_string_to_timestamp, DatePosition
 from utils.config_utils import Config
@@ -27,7 +27,9 @@ class ComplicatedData(BaseModel):
 
 @app.post("/form")
 async def getComplicatedData(data: ComplicatedData):
-    config_mgr = Config("utils/config.yaml")
+    from utils.public_def import PROJECT_ROOT
+    from os import path
+    config_mgr = Config(path.join(PROJECT_ROOT, 'config.yaml'))
     db_name = config_mgr.get("database.db_name")
     table_name = config_mgr.get("database.table_name")
 

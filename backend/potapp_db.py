@@ -150,9 +150,11 @@ def getLastYesterdaySecTimestamp() -> int:
     return int(timestamp * 1000) # 精确到毫秒
 
 if __name__ == '__main__':
+    from utils.public_def import PROJECT_ROOT
+    from os import path
     DEBUG_FLG = True
 
-    config_mgr = Config("utils/config.yaml")
+    config_mgr = Config(path.join(PROJECT_ROOT, 'config.yaml'))
     db_name = config_mgr.get("database.db_name")
     table_name = config_mgr.get("database.table_name")
 

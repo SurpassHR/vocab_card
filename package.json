@@ -12,9 +12,10 @@
     "cross-dev:react": "cd src-react&& npm run cross-dev",
     "build:react": "cd src-react&& npm run build",
     "install:react": "cd src-react&& npm install",
-    "cp-backend": "cp -r ./backend ./src-electron&& cd src-electron&& rm -rf ./dist-fastapi&& mv ./backend ./dist-fastapi",
-    "dev:all": "set REACT_DEV_PORT=9999&& cross-env BROWSER=none&& set BROWSER=none&& npm run cp-backend&& concurrently \"npm run cross-dev:react\" \"npm run dev:electron\"",
-    "build:all": "npm run cp-backend&& npm run build:react&& npm run build:electron",
+    "cp:backend": "cp -r ./backend ./src-electron&& cd src-electron&& rm -rf ./dist-fastapi&& mv ./backend ./dist-fastapi",
+    "cp:config": "cp -f ./config.yaml ./src-electron",
+    "dev:all": "set REACT_DEV_PORT=9999&& cross-env BROWSER=none&& set BROWSER=none&& npm run cp:backend&& npm run cp:config&& concurrently \"npm run cross-dev:react\" \"npm run dev:electron\"",
+    "build:all": "npm run cp:backend&& npm run cp:config&& npm run build:react&& npm run build:electron",
     "install:all": "concurrently \"npm run install:react\" \"npm run install:electron\""
   },
   "dependencies": {

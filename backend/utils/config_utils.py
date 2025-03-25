@@ -44,8 +44,10 @@ class Config:
 
 # 使用示例
 if __name__ == "__main__":
+    from utils.public_def import PROJECT_ROOT
+    from os import path
     # 创建配置实例
-    config = Config("config.yaml")
+    config = Config(path.join(PROJECT_ROOT, 'config.yaml'))
 
     # 获取配置值
     db_name = config.get("database.db_name")
