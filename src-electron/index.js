@@ -3,23 +3,36 @@ const path = require('path')
 const { spawn } = require('child_process');
 
 let mainWindow;
-function createWindow() {
+async function createWindow() {
+  // 先创建窗口但不立即加载内容
   mainWindow = new BrowserWindow({
     width: 600,
     height: 1000,
-    alwaysOnTop: true,
     frame: false,
+    show: false, // 初始隐藏窗口
     webPreferences: {
       webSecurity: true,
-      preload: path.resolve(__dirname, './preload.js')
+      preload: path.resolve(__dirname, './preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true
     }
   });
+
+  // 添加加载指示器
+  mainWindow.on('ready-to-show', () => {
+    mainWindow.show();
+  });
+
   const isDev = process.env.DEV_ENV;
-  if (isDev === 'true') {
-    mainWindow.loadURL(`http://localhost:${process.env.REACT_PORT}`);
-    mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadURL(path.join(__dirname, 'dist-react/index.html'));
+  try {
+    if (isDev === 'true') {
+      await mainWindow.loadURL(`http://localhost:${process.env.REACT_PORT}`);
+      mainWindow.webContents.openDevTools();
+    } else {
+      await mainWindow.loadURL(path.join(__dirname, 'dist-react/index.html'));
+    }
+  } catch (err) {
+    console.error('加载窗口内容失败:', err);
   }
 }
 
@@ -98,16 +111,29 @@ function registerIPCMsg() {
   ipcMain.on('maximize-window', actionMaximizeWindow);
 }
 
-app.on('ready', () => {
-  console.log('window ready');
-  createWindow();
-  startServer();
+app.on('ready', async () => {
+  console.log('应用准备就绪');
+  try {
+    // 先启动后端服务
+    await startServer();
+    console.log('后端服务已启动');
+
+    // 然后创建窗口
+    await createWindow();
+    console.log('窗口已创建');
+
+    registerIPCMsg();
+    console.log('IPC消息已注册');
+  } catch (err) {
+    console.error('启动失败:', err);
+    app.quit();
+  }
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
-  })
-  registerIPCMsg();
-})
+  });
+});
 
 app.on('window-all-closed', actionCloseAllWindows)
