@@ -1,0 +1,9 @@
+.pronunciation {
+  margin-bottom: 8px;
+}
+
+.pronunciation-item {
+  margin-right: 10px;
+  font-size: 0.9em;
+  color: #777;
+}

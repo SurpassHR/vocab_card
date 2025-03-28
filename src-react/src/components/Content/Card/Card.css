@@ -1,0 +1,64 @@
+/* Custom ScrollBar */
+::-webkit-scrollbar {
+  display: none !important;
+  background-color: transparent !important;
+  background-color: inherit !important;
+  width: 5px !important;
+  height: 8px !important;
+  border-width: initial !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  border-image: initial !important;
+}
+
+.card {
+  font-family: 'PingFang SC';
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 1.2rem;
+  width: 100%;
+  max-width: 450px;
+  border: 20px solid #f9f9f9;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  overflow: scroll;
+  max-height: 80px;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.card:hover {
+  max-height: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.trait {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.meaning {
+  font-weight: 500;
+  color: #28a745;
+}
+
+.explain {
+  color: #6c757d;
+}
+
+.examples {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.example-item {
+  margin-bottom: 6px;
+}
+
+.exampleEn {
+  color: #007bff;
+  font-weight: 500;
+}
+
+.exampleZh {
+  color: #28a745;
+}

@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#custom-title-bar {
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  background: linear-gradient(#F0EFF0, #D3D1D3);
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  height: var(--title-bar-height);
+}

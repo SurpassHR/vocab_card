@@ -1,3 +1,7 @@
+:root {
+  --title-bar-height: 2rem;
+}
+
 .app {
   display: flex;
   flex-direction: column;
