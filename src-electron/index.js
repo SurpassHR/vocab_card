@@ -10,7 +10,7 @@ function createWindow() {
     alwaysOnTop: true,
     frame: false,
     webPreferences: {
-      webSecurity: false,
+      webSecurity: true,
       preload: path.resolve(__dirname, './preload.js')
     }
   });
