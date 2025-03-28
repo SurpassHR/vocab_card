@@ -7,6 +7,7 @@
   "scripts": {
     "dev:electron": "cd src-electron&& npm run dev",
     "build:electron": "cd src-electron&& npm run build",
+    "build:electron-unpack": "cd src-electron&& npm run build:unpack",
     "install:electron": "cd src-electron&& npm install",
     "dev:react": "cd src-react&& npm run dev",
     "cross-dev:react": "cd src-react&& npm run cross-dev",
@@ -14,9 +15,10 @@
     "install:react": "cd src-react&& npm install",
     "cp:backend": "cp-backend.bat",
     "cp:config": "cp -f ./config.yaml ./src-electron",
-    "dev:all": "set REACT_DEV_PORT=9999&& cross-env BROWSER=none&& set BROWSER=none&& npm run cp:backend&& npm run cp:config&& concurrently \"npm run cross-dev:react\" \"npm run dev:electron\"",
-    "build:all": "npm run cp:backend&& npm run cp:config&& npm run build:react&& npm run build:electron",
-    "install:all": "concurrently \"npm run install:react\" \"npm run install:electron\""
+    "dev": "set REACT_DEV_PORT=9999&& cross-env BROWSER=none&& set BROWSER=none&& npm run cp:backend&& npm run cp:config&& concurrently \"npm run cross-dev:react\" \"npm run dev:electron\"",
+    "build": "npm run cp:backend&& npm run cp:config&& npm run build:react&& npm run build:electron",
+    "build:unpack": "npm run cp:backend&& npm run cp:config&& npm run build:react&& npm run build:electron",
+    "install": "concurrently \"npm run install:react\" \"npm run install:electron\""
   },
   "dependencies": {
     "concurrently": "^9.1.2"

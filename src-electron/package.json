@@ -7,7 +7,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env DEV_ENV=true&& set DEV_ENV=true&& cross-env REACT_PORT=$REACT_DEV_PORT&& set REACT_PORT=%REACT_DEV_PORT%&& electron .",
-    "build": "cross-env BUILD_PATH=../dist-electron&& set BUILD_PATH=../dist-electron&& cross-env DEV_ENV=false&& set DEV_ENV=false&& set DEV_ENV=false&& electron-builder"
+    "build": "cross-env BUILD_PATH=../dist-electron&& set BUILD_PATH=../dist-electron&& cross-env DEV_ENV=false&& set DEV_ENV=false&& set DEV_ENV=false&& electron-builder",
+    "build:unpack": "cross-env BUILD_PATH=../dist-electron&& set BUILD_PATH=../dist-electron&& cross-env DEV_ENV=false&& set DEV_ENV=false&& set DEV_ENV=false&& electron-builder dir"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
