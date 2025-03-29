@@ -4,3 +4,4 @@ pydantic
 datetime
 tzlocal
 pyyaml
+pyinstaller

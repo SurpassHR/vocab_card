@@ -27,7 +27,7 @@
       "preload.js"
     ],
     "extraFiles": [
-      "dist-fastapi/**/*",
+      "potapp-server.exe",
       "!**/__pycache__/**/*",
       "config.yaml"
     ],

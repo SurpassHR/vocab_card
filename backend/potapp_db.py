@@ -92,13 +92,17 @@ class PotAppWordHistoryBD:
         # 提取解释信息
         explanations = parsed_res.get("explanations", [])
         for exp in explanations:
-            meaning = MEANING(
-                mean=exp.get("meaning"),
-                trait=exp.get("trait"),
-                explain=exp.get("explain"),
-                exampleEn=[],
-                exampleZh=[],
-            )
+            try:
+                meaning = MEANING(
+                    mean=exp.get("meaning"),
+                    trait=exp.get("trait"),
+                    explain=exp.get("explain"),
+                    exampleEn=[],
+                    exampleZh=[],
+                )
+            except:
+                print(exp)
+                continue
             examplesEn = exp.get("exampleEn", [])
             for example in examplesEn:
                 _appendListItem(meaning, 'exampleEn', example)
@@ -150,11 +154,10 @@ def getLastYesterdaySecTimestamp() -> int:
     return int(timestamp * 1000) # 精确到毫秒
 
 if __name__ == '__main__':
-    from utils.public_def import PROJECT_ROOT
-    from os import path
+    from utils.public_def import CONFIG_FILE
     DEBUG_FLG = True
 
-    config_mgr = Config(path.join(PROJECT_ROOT, 'config.yaml'))
+    config_mgr = Config(CONFIG_FILE)
     db_name = config_mgr.get("database.db_name")
     table_name = config_mgr.get("database.table_name")
 
