@@ -22,4 +22,4 @@ MEANING = namedtuple(
     ]
 )
 
-PROJECT_ROOT = path.join(getcwd(), '../')
+CONFIG_FILE = path.abspath(path.join(getcwd(), 'config.yaml'))

@@ -7,3 +7,6 @@ config.yaml
 dist*
 venv
 .venv
+*.spec
+**/build
+*.exe

@@ -29,9 +29,9 @@ class ComplicatedData(BaseModel):
 
 @app.post("/form")
 async def getComplicatedData(data: ComplicatedData):
-    from utils.public_def import PROJECT_ROOT
-    from os import path
-    config_mgr = Config(path.join(PROJECT_ROOT, 'config.yaml'))
+    print(data)
+    from utils.public_def import CONFIG_FILE
+    config_mgr = Config(CONFIG_FILE)
     db_name = config_mgr.get("database.db_name")
     table_name = config_mgr.get("database.table_name")
 
@@ -60,4 +60,4 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGILL, signal_handler)
-    uvicorn.run(app="server:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run(app=app, host="127.0.0.1", port=8000, reload=False)

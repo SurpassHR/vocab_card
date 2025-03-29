@@ -38,7 +38,7 @@ async function createWindow() {
 
 let server;
 function startServer() {
-  server = spawn('venv/Scripts/python', ['server.py'], { cwd: './dist-fastapi' });
+  server = spawn('potapp-server', [], { cwd: './' });
   console.log(`启动后端 pid: ${server.pid}`);
 
   // 监听标准输出数据
@@ -63,7 +63,7 @@ function startServer() {
 
 function killWin32Server() {
   if (server && server.pid) {
-    const command = `taskkill /PID ${server.pid} /F`;
+    const command = 'taskkill /IM potapp-server.exe /F';
     spawn('cmd', ['/c', command]);
   }
 }
