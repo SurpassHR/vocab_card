@@ -17,6 +17,9 @@ importers:
       eslint:
         specifier: 8.57.1
         version: 8.57.1
+      lodash.debounce:
+        specifier: ^4.0.8
+        version: 4.0.8
       nanoid:
         specifier: ^5.1.3
         version: 5.1.5

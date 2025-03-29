@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Content.css';
 import Card from './Card/Card.js';
 import debounce from 'lodash.debounce';
-
-// 懒加载非关键组件
-const DateRangePicker = lazy(() => import('./DatePicker.js'));
+import DateRangePicker from './DatePicker.js';
 
 const Content = () => {
   const [words, setWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [loading, setLoading] = useState(true); // 初始设为true
+  const [loading, setLoading] = useState(false); // 初始设为true
   const [error, setError] = useState(null);
 
   // 获取最近7天的数据作为初始数据
@@ -138,16 +136,14 @@ const Content = () => {
       <div className="content">
         <div className="skeleton-loader">加载数据中...</div>
       </div>
-    ) : error ? (
+    ) : (error ? (
       <div className="content">错误: {error}</div>
     ) : (
       <div className="content">
-        <Suspense fallback={<div>加载日期选择器...</div>}>
-          <DateRangePicker onDateChange={handleDateChange} />
-        </Suspense>
+        <DateRangePicker onDateChange={handleDateChange} />
         <Card wordData={words[currentWordIndex]} currIdx={currentWordIndex + 1} totalNum={words.length} />
       </div>
-    )
+    ))
   );
 };
 

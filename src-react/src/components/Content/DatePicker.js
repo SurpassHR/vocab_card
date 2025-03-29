@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
 function DateRangePicker({ onDateChange }) {
   const [startDate, setStartDate] = useState(null);
@@ -13,7 +13,7 @@ function DateRangePicker({ onDateChange }) {
     if (start && end) {
       // 检查日期是否发生了变化
       if (start.getTime() !== (startDate ? startDate.getTime() : null) ||
-          end.getTime() !== (endDate ? endDate.getTime() : null)) {
+        end.getTime() !== (endDate ? endDate.getTime() : null)) {
         setStartDate(start);
         setEndDate(end);
         if (onDateChange) {
