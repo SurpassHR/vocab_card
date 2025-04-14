@@ -46,9 +46,77 @@ class PotAppWordHistoryBD:
         column_names = self.cur.execute(f"PRAGMA table_info({self.table_name})").fetchall()
         return column_names
 
+    def _extractNewDBFromOriginDBByTimeRange(self, startTime: str, endTime: str, new_db_name: str) -> bool:
+        try:
+            # 获取原表结构
+            create_table_row = self.cur.execute(
+                "SELECT sql FROM sqlite_master WHERE type='table' AND name=?",
+                (self.table_name,)
+            ).fetchone()
+            if not create_table_row:
+                print(f"原表 {self.table_name} 不存在")
+                return False
+            create_table_sql = create_table_row[0]
+
+            # 创建新数据库连接
+            new_conn = sqlite3.connect(new_db_name)
+            new_cur = new_conn.cursor()
+
+            # 处理表存在的情况
+            new_cur.execute(f"DROP TABLE IF EXISTS {self.table_name}")  # 先删除旧表
+            new_cur.execute(create_table_sql)  # 按原结构重建表
+
+            # 获取原表列名
+            self.cur.execute(f"PRAGMA table_info({self.table_name})")
+            columns = [row[1] for row in self.cur.fetchall()]
+            # print(columns) # ['id', 'text', 'source', 'target', 'service', 'result', 'timestamp']
+
+            # 准备插入语句
+            placeholders = ','.join(['?'] * len(columns))
+            insert_sql = f"INSERT INTO {self.table_name} ({','.join(columns)}) VALUES ({placeholders})"
+
+            # 获取数据
+            data = self._getCambDictDataFromSqlDBByData(
+                startTimestamp=date_string_to_timestamp(startTime, DatePosition.LEFT_SIDE),
+                endTimestamp=date_string_to_timestamp(endTime, DatePosition.RIGHT_SIDE)
+            )
+            if not data:
+                print("没有需要导出的数据")
+                new_conn.close()
+                return False
+
+            # 批量插入数据
+            data_values = []
+            for item in data:
+                row_values = []
+                for col in columns:
+                    col_data = item.get(col, None)
+                    # 处理 column name 为 result 这一行，删去音频数据
+                    if col == 'result':
+                        json_col_data = json.loads(col_data)
+                        pronounciations = json_col_data.get('pronunciations')[0]
+                        voice_data = pronounciations['voice']
+                        if voice_data:
+                            pronounciations.pop('voice', None)
+                            json_col_data['pronunciations'] = pronounciations
+                            col_data = str(json_col_data)
+                    row_values.append(col_data)
+                data_values.append(tuple(row_values))
+
+            new_cur.executemany(insert_sql, data_values)
+            new_conn.commit()
+            new_conn.close()
+            return True
+        except Exception as e:
+            print(f"导出数据失败: {e}")
+            if 'new_conn' in locals():
+                new_conn.rollback()
+                new_conn.close()
+            return False
+
     def _getCambDictDataFromSqlDBByData(self, startTimestamp: int, endTimestamp: int) -> List[ITEM]:
         try:
-            res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = \'cambridge_dict\' AND timestamp >= \'{startTimestamp}\' AND timestamp <= \'{endTimestamp}\'").fetchall()
+            res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = 'cambridge_dict' AND timestamp >= {startTimestamp} AND timestamp <= {endTimestamp}").fetchall()
         except:
             return []
 
@@ -162,13 +230,15 @@ if __name__ == '__main__':
     table_name = config_mgr.get("database.table_name")
 
     pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
-    pot_db.procDBParse(
-        date_string_to_timestamp(
-            date_str='25-03-11',
-            date_position=DatePosition.LEFT_SIDE
-        ),
-        date_string_to_timestamp(
-            date_str='25-03-11',
-            date_position=DatePosition.RIGHT_SIDE
-        )
-    )
+    # pot_db.procDBParse(
+    #     date_string_to_timestamp(
+    #         date_str='25-03-11',
+    #         date_position=DatePosition.LEFT_SIDE
+    #     ),
+    #     date_string_to_timestamp(
+    #         date_str='25-03-11',
+    #         date_position=DatePosition.RIGHT_SIDE
+    #     )
+    # )
+
+    pot_db._extractNewDBFromOriginDBByTimeRange('2025-03-25', '2025-04-13', 'a.txt')
