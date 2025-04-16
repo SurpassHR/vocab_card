@@ -25,7 +25,7 @@ class PotAppWordHistoryBD:
             if structured_result is None:
                 continue
             if DEBUG_FLG:
-                self._formatResult(structured_result)
+                # self._formatResult(structured_result)
                 pass
             else:
                 vocab_dict = self._formatOutput(structured_result)
@@ -90,18 +90,40 @@ class PotAppWordHistoryBD:
             for item in data:
                 row_values = []
                 for col in columns:
-                    col_data = item.get(col, None)
-                    # 处理 column name 为 result 这一行，删去音频数据
-                    if col == 'result':
-                        json_col_data = json.loads(col_data)
-                        pronounciations = json_col_data.get('pronunciations')[0]
-                        voice_data = pronounciations['voice']
-                        if voice_data:
-                            pronounciations.pop('voice', None)
-                            json_col_data['pronunciations'] = pronounciations
-                            col_data = str(json_col_data)
+                    col_data = item.get(col) # 使用 get(col) 而不是 get(col, None) 以区分不存在的键和值为None的情况，虽然在这里影响不大
+
+                    # 处理 result 列
+                    if col == 'result' and col_data != '':
+                        try:
+                            json_col_data = json.loads(col_data)
+
+                            # 确保 'pronunciations' 和 voice 存在且不为空
+                            pronunciations = json_col_data.get('pronunciations')
+                            voice_data = pronunciations[0].get('voice')
+                            if voice_data: # 检查 voice_data 是否非空
+                                for pronoun in pronunciations:
+                                    pronoun['voice'] = []
+                                    # 注意：这里只修改了第一个发音项的 voice，如果可能有多个发音项需要处理，逻辑需调整
+                            # 使用 json.dumps 保证是有效的 JSON 字符串
+                            json_col_data['pronunciations'] = pronunciations
+                            col_data = json.dumps(json_col_data)
+                        except (json.JSONDecodeError, TypeError, KeyError, IndexError) as e:
+                            print(f"处理 result 列时出错: {e}, row data: {item}")
+                            # 可以选择跳过这行，或者将 result 设为 None 或错误标记
+                            col_data = None # 或者保持原样，或者记录错误
+
+                    # 直接添加获取到的值，包括 None
                     row_values.append(col_data)
-                data_values.append(tuple(row_values))
+
+                # 确保列的数量匹配（理论上应该总是匹配，除非原始数据有问题）
+                if '' in row_values:
+                    # print(f"警告：包含空数据{row_values}")
+                    pass
+                elif len(row_values) != len(columns):
+                    # print(f"警告：跳过一行，因为列数不匹配 ({len(row_values)} vs {len(columns)}")
+                    pass
+                else:
+                    data_values.append(tuple(row_values))
 
             new_cur.executemany(insert_sql, data_values)
             new_conn.commit()
@@ -117,11 +139,13 @@ class PotAppWordHistoryBD:
     def _getCambDictDataFromSqlDBByData(self, startTimestamp: int, endTimestamp: int) -> List[ITEM]:
         try:
             res = self.cur.execute(f"SELECT * FROM {self.table_name} WHERE service = 'cambridge_dict' AND timestamp >= {startTimestamp} AND timestamp <= {endTimestamp}").fetchall()
-        except:
+        except sqlite3.Error as e:
+            print(f"Error: {e}")
             return []
 
         struct_list = [ITEM(*item) for item in res]
-        dict_list = [item._asdict() for item in struct_list]
+        dict_list = []
+        [dict_list.append(item._asdict()) for item in struct_list if len(item._asdict().keys()) == 7]
 
         return dict_list
 
@@ -189,12 +213,13 @@ class PotAppWordHistoryBD:
             print(f"  - {r}: {s}")
 
         print("释义: ")
-        for e, m, t in zip(result.explain, result.meaning, result.trait):
-            print(f"  - {e} - {m}, {t}")
+        meaningList: List[MEANING] = result.meaning
+        for meaning in  meaningList:
+            print(f"  - {meaning.mean} - {meaning.trait}: {meaning.explain}")
 
         print("例句:")
-        for en, zh in zip(result.exampleEn, result.exampleZh):
-            print(f"  - {en} - {zh}")
+        for meaning in meaningList:
+            print(f"  - {meaning.exampleEn} - {meaning.exampleZh}")
 
         print('\n')
 
@@ -230,15 +255,13 @@ if __name__ == '__main__':
     table_name = config_mgr.get("database.table_name")
 
     pot_db = PotAppWordHistoryBD(db_name=db_name, table_name=table_name)
-    # pot_db.procDBParse(
-    #     date_string_to_timestamp(
-    #         date_str='25-03-11',
-    #         date_position=DatePosition.LEFT_SIDE
-    #     ),
-    #     date_string_to_timestamp(
-    #         date_str='25-03-11',
-    #         date_position=DatePosition.RIGHT_SIDE
-    #     )
-    # )
-
-    pot_db._extractNewDBFromOriginDBByTimeRange('2025-03-25', '2025-04-13', 'a.txt')
+    pot_db.procDBParse(
+        date_string_to_timestamp(
+            date_str='25-03-01',
+            date_position=DatePosition.LEFT_SIDE
+        ),
+        date_string_to_timestamp(
+            date_str='25-04-16',
+            date_position=DatePosition.RIGHT_SIDE
+        )
+    )
