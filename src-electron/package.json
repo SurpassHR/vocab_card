@@ -29,7 +29,7 @@
     "extraFiles": [
       "potapp-server.exe",
       "!**/__pycache__/**/*",
-      "config.yaml"
+      "config.yaml.example"
     ],
     "asar": true,
     "directories": {

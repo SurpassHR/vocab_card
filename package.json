@@ -16,7 +16,7 @@
     "dev:backend": "cd backend&& venv\\Scripts\\python.exe -m uvicorn server:app --reload",
     "build:backend": "cd backend&& install_deps.bat&& venv\\Scripts\\activate.bat&& pyinstaller -F server.py --onefile --name potapp-server",
     "cp:backend": "cp -f backend/dist/potapp-server src-electron/",
-    "cp:config": "cp -f backend/config.yaml ./src-electron",
+    "cp:config": "cp -f backend/config.yaml.example ./src-electron",
     "dev": "set REACT_DEV_PORT=9998&& cross-env BROWSER=none&& set BROWSER=none&& npm run cp:backend&& npm run cp:config&& concurrently \"npm run dev:backend\" \"npm run cross-dev:react\" \"npm run dev:electron\"",
     "build": "npm run build:backend&& npm run cp:backend&& npm run cp:config&& npm run build:react&& npm run build:electron",
     "build:unpack": "npm run build:backend&& npm run cp:backend&& npm run cp:config&& npm run build:react&& npm run build:electron",
