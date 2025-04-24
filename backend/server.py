@@ -1,14 +1,24 @@
+import sys
+import signal
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from potapp_db import PotAppWordHistoryBD
-from utils.date_utils import date_string_to_timestamp, DatePosition
-from utils.config_utils import Config
 from pydantic import BaseModel
-import signal
-import sys
+from utils.date_utils import dateStringToTimestamp, DatePosition
+from utils.config_utils import Config
+from utils.logger import Logger
+from utils.public_def import CONFIG_FILE
 
+logger = Logger(__name__).getLogger()
 app = FastAPI()
+
+# 全局数据库连接
+config_mgr = Config(CONFIG_FILE)
+pot_db = PotAppWordHistoryBD(
+    db_name=config_mgr.get("database.db_name"),
+    table_name=config_mgr.get("database.table_name")
+)
 
 # Add CORS middleware
 app.add_middleware(
@@ -29,30 +39,23 @@ class ComplicatedData(BaseModel):
 
 @app.post("/form")
 async def getComplicatedData(data: ComplicatedData):
-    print(data)
-    from utils.public_def import CONFIG_FILE
-    config_mgr = Config(CONFIG_FILE)
-    db_name = config_mgr.get("database.db_name")
-    table_name = config_mgr.get("database.table_name")
+    logger.info(f'startDate: {data.startDate}, endDate: {data.endDate}')
 
-    pot_db = PotAppWordHistoryBD(
-        db_name=db_name,
-        table_name=table_name
+    startDateTimestamp=dateStringToTimestamp(
+        date_str=data.startDate,
+        date_position=DatePosition.LEFT_SIDE
     )
-
+    endDateTimestamp=dateStringToTimestamp(
+        date_str=data.endDate,
+        date_position=DatePosition.RIGHT_SIDE
+    )
     return pot_db.procDBParse(
-        startDateTimestamp=date_string_to_timestamp(
-            date_str=data.startDate,
-            date_position=DatePosition.LEFT_SIDE
-        ),
-        endDateTimestamp=date_string_to_timestamp(
-            date_str=data.endDate,
-            date_position=DatePosition.RIGHT_SIDE
-        )
+        startDateTimestamp=startDateTimestamp,
+        endDateTimestamp=endDateTimestamp
     )
 
 def signal_handler(sig, frame):
-    print('接收到信号，正在清理...')
+    logger.info('接收到信号，正在清理...')
     # 在这里添加你的清理代码，例如关闭服务器连接、保存数据等
     sys.exit(0)
 

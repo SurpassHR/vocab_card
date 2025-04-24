@@ -1,5 +1,5 @@
 {
-  "name": "src-electron",
+  "name": "electron",
   "version": "1.0.0",
   "description": "A electron-packaged frontend for vocabulary review desktop application.",
   "author": "Hu Rui",
@@ -12,28 +12,34 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "electron": "^35.0.3",
+    "electron": "35.0.3",
     "electron-builder": "^25.1.8"
   },
   "build": {
     "productName": "Vocab-review",
     "appId": "com.vocabreviwe.application",
     "files": [
-      "dist-react/**/*",
-      "!dist-react/package.json",
-      "!dist-react/package-lock.json",
-      "!dist-react/pnpm-lock.yaml",
+      "frontend/**/*",
+      "!frontend/package.json",
+      "!frontend/package-lock.json",
+      "!frontend/pnpm-lock.yaml",
       "index.js",
       "preload.js"
     ],
     "extraFiles": [
-      "potapp-server.exe",
-      "!**/__pycache__/**/*",
-      "config.yaml.example"
+      {
+        "from": "../build/backend/potapp-server.exe",
+        "to": "potapp-server.exe"
+      },
+      {
+        "from": "../config/config.yaml.example",
+        "to": "config.yaml"
+      },
+      "!**/__pycache__/**/*"
     ],
-    "asar": true,
+    "asar": false,
     "directories": {
-      "output": "../dist"
+      "output": "../build/dist"
     },
     "win": {
       "target": [

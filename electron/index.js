@@ -2,6 +2,10 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path')
 const { spawn } = require('child_process');
 
+function isDev() {
+  return process.env.DEV_ENV;
+}
+
 let mainWindow;
 async function createWindow() {
   // 先创建窗口但不立即加载内容
@@ -23,13 +27,12 @@ async function createWindow() {
     mainWindow.show();
   });
 
-  const isDev = process.env.DEV_ENV;
   try {
-    if (isDev === 'true') {
+    if (isDev() === 'true') {
       await mainWindow.loadURL(`http://localhost:${process.env.REACT_PORT}`);
       mainWindow.webContents.openDevTools();
     } else {
-      await mainWindow.loadURL(path.join(__dirname, 'dist-react/index.html'));
+      await mainWindow.loadURL(path.join(__dirname, 'frontend/index.html'));
     }
   } catch (err) {
     console.error('加载窗口内容失败:', err);
@@ -37,18 +40,30 @@ async function createWindow() {
 }
 
 let server;
-function startServer() {
+function startDevServer() {
+  server = spawn('venv/Scripts/python', ['server.py'], { cwd: '../backend' });
+}
+
+function startReleaseServer() {
   server = spawn('potapp-server', [], { cwd: './' });
+}
+
+function startServer() {
+  if (isDev() === 'true') {
+    startDevServer();
+  } else {
+    startReleaseServer();
+  }
   console.log(`启动后端 pid: ${server.pid}`);
 
   // 监听标准输出数据
   server.stdout.on('data', (data) => {
-    console.log(`stdout: ${data.toString()}`); // 将 Buffer 转换为字符串
+    console.log(`backend stdout ${data.toString()}`); // 将 Buffer 转换为字符串
   });
 
   // 监听标准错误输出数据
   server.stderr.on('data', (data) => {
-    console.error(`stderr: ${data.toString()}`);
+    console.error(`backend stderr ${data.toString()}`);
   });
 
   // 监听进程退出事件

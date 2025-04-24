@@ -1,19 +1,11 @@
 import yaml
 
 class Config:
-    """简单的配置读取类"""
-
     def __init__(self, config_path="config.yaml"):
-        """初始化配置
-
-        Args:
-            config_path: YAML配置文件的路径
-        """
         self.config_path = config_path
         self.config = self._load_config()
 
     def _load_config(self):
-        """从YAML文件加载配置"""
         try:
             with open(self.config_path, 'r', encoding='utf-8') as file:
                 return yaml.safe_load(file)
@@ -22,15 +14,6 @@ class Config:
             return {}
 
     def get(self, key, default=None):
-        """获取配置值
-
-        Args:
-            key: 配置键，支持点表示法，如 'database.host'
-            default: 如果键不存在，返回的默认值
-
-        Returns:
-            配置值或默认值
-        """
         keys = key.split('.')
         value = self.config
 

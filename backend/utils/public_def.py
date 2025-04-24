@@ -1,5 +1,6 @@
+import os
+import sys
 from collections import namedtuple
-from os import getcwd, path
 
 ITEM = namedtuple('Item', ['id', 'text', 'source', 'target', 'service', 'result', 'timestamp'])
 RESULT = namedtuple(
@@ -22,4 +23,8 @@ MEANING = namedtuple(
     ]
 )
 
-CONFIG_FILE = path.abspath(path.join(getcwd(), 'config.yaml'))
+try:
+    _ = sys._MEIPASS
+    CONFIG_FILE = os.path.join(os.getcwd(), 'config.yaml')
+except:
+    CONFIG_FILE = os.path.join(os.getcwd(), '..', 'config', 'config.yaml')
