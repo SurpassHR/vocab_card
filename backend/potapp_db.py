@@ -49,7 +49,7 @@ class PotAppWordHistoryBD:
         column_names = self.cur.execute(f"PRAGMA table_info({self.table_name})").fetchall()
         return column_names
 
-    def _extractNewDBFromOriginDBByTimeRange(self, startTime: str, endTime: str, new_db_name: str) -> bool:
+    def _extractNewDBFromOriginDBByTimeRange(self, startTime: str, endTime: str, dstDBName: str) -> bool:
         try:
             # 获取原表结构
             create_table_row = self.cur.execute(
@@ -62,11 +62,11 @@ class PotAppWordHistoryBD:
             create_table_sql = create_table_row[0]
 
             # 上级目录不存在时创建目录
-            if not os.path.exists(os.path.dirname(new_db_name)):
-                os.makedirs(os.path.dirname(new_db_name))
+            if not os.path.exists(os.path.dirname(dstDBName)):
+                os.makedirs(os.path.dirname(dstDBName))
 
             # 创建新数据库连接
-            new_conn = sqlite3.connect(new_db_name)
+            new_conn = sqlite3.connect(dstDBName)
             new_cur = new_conn.cursor()
 
             # 处理表存在的情况
@@ -135,7 +135,7 @@ class PotAppWordHistoryBD:
                 else:
                     data_values.append(tuple(row_values))
 
-            self.logger.info(f"sync data from {self.db_name} to {new_db_name}, range: {startTime} - {endTime}, data num: {len(data_values)}")
+            self.logger.info(f"sync data from {self.db_name} to {dstDBName}, range: {startTime} - {endTime}, data num: {len(data_values)}")
             new_cur.executemany(insert_sql, data_values)
             new_conn.commit()
             new_conn.close()

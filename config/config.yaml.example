@@ -3,5 +3,7 @@ database:
   db_name: "your database path"
   table_name: "history"
   sync_config:
+    src_database: ""
+    dst_database: ""
     start_time: ""
     end_time: ""
