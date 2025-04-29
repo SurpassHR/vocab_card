@@ -63,4 +63,4 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGILL, signal_handler)
-    uvicorn.run(app=app, host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run(app=app, host="127.0.0.1", port=12345, reload=False)

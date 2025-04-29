@@ -36,7 +36,7 @@ const Content = () => {
       setLoading(false);
       return;
     }
-    const url = 'http://127.0.0.1:8000';
+    const url = 'http://127.0.0.1:12345';
     const api = '/form';
     const targetApi = url + api;
     const method = 'POST';
