@@ -71,12 +71,51 @@ jobs:
         draft: false
         prerelease: false
 
+    - name: Install compression tools
+      run: |
+        choco install 7zip -y
+
+    - name: Create compressed packages
+      run: |
+        7z a ./artifacts/electron/dist/vocab_card.zip ./artifacts/electron/dist/win-unpacked/*
+        7z a ./artifacts/electron/dist/vocab_card.7z ./artifacts/electron/dist/win-unpacked/*
+
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/electron/dist/*.exe
-        asset_name: electron-app.exe
+        asset_path: ./artifacts/electron/dist/Vocab-review Setup 1.0.0.exe
+        asset_name: Vocab-review-Setup-1.0.0.exe
         asset_content_type: application/octet-stream
+
+    - name: Upload Blockmap
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./artifacts/electron/dist/Vocab-review Setup 1.0.0.exe.blockmap
+        asset_name: Vocab-review-Setup-1.0.0.exe.blockmap
+        asset_content_type: application/octet-stream
+
+    - name: Upload ZIP Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./artifacts/electron/dist/vocab_card.zip
+        asset_name: vocab_card.zip
+        asset_content_type: application/zip
+
+    - name: Upload 7Z Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./artifacts/electron/dist/vocab_card.7z
+        asset_name: vocab_card.7z
+        asset_content_type: application/x-7z-compressed
