@@ -21,7 +21,7 @@
     "dev": "set REACT_DEV_PORT=9998&& cross-env BROWSER=none&& set BROWSER=none&& concurrently \"npm run cross-dev:react\" \"npm run dev:electron\"",
     "build": "npm run build:backend&& npm run build:react&& npm run cp:react&& npm run build:electron&& npm run clean:react",
     "build:unpack": "npm run build:backend&& npm run build:react&& npm run cp:react&& npm run build:electron&& npm run clean:react",
-    "install:all": "concurrently \"pnpm install\" \"npm run install:react\" \"npm run install:electron\" \"npm run install:backend\""
+    "install:all": "npm i&& concurrently \"pnpm install\" \"npm run install:react\" \"npm run install:electron\" \"npm run install:backend\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
