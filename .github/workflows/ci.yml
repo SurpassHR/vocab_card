@@ -74,7 +74,7 @@ jobs:
         choco install 7zip -y
 
     - name: List artifacts directory structure
-      run: dir /s .\artifacts\
+      run: Get-ChildItem -Recurse .\artifacts\ | Format-Table FullName
 
     - name: Create compressed packages
       run: |
