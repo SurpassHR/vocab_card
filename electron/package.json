@@ -23,6 +23,7 @@
       "!frontend/package.json",
       "!frontend/package-lock.json",
       "!frontend/pnpm-lock.yaml",
+      "!**/node_modules/**/*",
       "index.js",
       "preload.js"
     ],
@@ -35,9 +36,11 @@
         "from": "../config/config.yaml.example",
         "to": "config.yaml"
       },
-      "!**/__pycache__/**/*"
+      "!**/__pycache__/**/*",
+      "!**/node_modules/**/*",
+      "!**/frontend/**/*"
     ],
-    "asar": false,
+    "asar": true,
     "directories": {
       "output": "../build/dist"
     },

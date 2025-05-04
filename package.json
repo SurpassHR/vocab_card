@@ -23,10 +23,8 @@
     "build:unpack": "npm run build:backend&& npm run build:react&& npm run cp:react&& npm run build:electron&& npm run clean:react",
     "install:all": "concurrently \"pnpm install\" \"npm run install:react\" \"npm run install:electron\" \"npm run install:backend\""
   },
-  "dependencies": {
-    "concurrently": "^9.1.2"
-  },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "cross-env": "^7.0.3"
   }
 }

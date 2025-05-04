@@ -18,24 +18,7 @@ const Content = () => {
     return { start, end };
   };
 
-  // 缓存键生成函数
-  const getCacheKey = (startDate, endDate) => `vocab_data_${startDate}_${endDate}`;
-
-  // 检查缓存是否有效（1小时有效期）
-  const isCacheValid = (cachedData) => {
-    return cachedData &&
-      Date.now() - cachedData.timestamp < 3600000; // 1小时
-  };
-
   const fetchRangeData = async (startDate, endDate) => {
-    // 先尝试从缓存读取
-    const cacheKey = getCacheKey(startDate, endDate);
-    const cachedData = JSON.parse(localStorage.getItem(cacheKey));
-    if (isCacheValid(cachedData)) {
-      setWords(cachedData.data);
-      setLoading(false);
-      return;
-    }
     const url = 'http://127.0.0.1:12345';
     const api = '/form';
     const targetApi = url + api;
@@ -67,12 +50,6 @@ const Content = () => {
       setWords(data);
       setLoading(false);
       setCurrentWordIndex(0);
-
-      // 保存到缓存
-      localStorage.setItem(cacheKey, JSON.stringify({
-        data,
-        timestamp: Date.now()
-      }));
     } catch (err) {
       setError(err.message);
       setLoading(false);
