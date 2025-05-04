@@ -39,9 +39,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: |
-          build/
-          electron/dist/
+        path: build/
 
   release:
     needs: build
@@ -75,10 +73,13 @@ jobs:
       run: |
         choco install 7zip -y
 
+    - name: List artifacts directory structure
+      run: dir /s .\artifacts\
+
     - name: Create compressed packages
       run: |
-        7z a ./artifacts/electron/dist/vocab_card.zip ./artifacts/electron/dist/win-unpacked/*
-        7z a ./artifacts/electron/dist/vocab_card.7z ./artifacts/electron/dist/win-unpacked/*
+        7z a .\artifacts\electron\dist\vocab_card.zip .\artifacts\electron\dist\*.exe .\artifacts\electron\dist\*.blockmap
+        7z a .\artifacts\electron\dist\vocab_card.7z .\artifacts\electron\dist\*.exe .\artifacts\electron\dist\*.blockmap
 
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
